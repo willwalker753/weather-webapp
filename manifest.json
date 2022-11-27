@@ -1,7 +1,7 @@
 {
   "name": "weather-webapp",
   "short_name": "weather-webapp",
-  "start_url": "/",
+  "start_url": "/weather-webapp/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#fff",
