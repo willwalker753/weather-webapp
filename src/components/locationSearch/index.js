@@ -3,9 +3,56 @@ import { connect } from 'preact-redux';
 import { setLocation } from '../../redux/actions/locationAction';
 import axios from 'axios';
 import generalBackendBaseUrl from '../../util/generalBackendBaseUrl';
-// import magnifyingGlassImg from '../../assets/image/magnifying-glass.svg';
 import style from './style.css';
-import baseName from '../../util/baseName';
+import imagePathFormatter from '../../util/imagePathFormatter';
+
+const defaultLocationSuggestionList = [
+	{
+		"name": "Dallas",
+		"lat": 32.7762719,
+		"lon": -96.7968559,
+		"country_code": "US",
+		"country_name": "United States",
+		"state_code": "TX",
+		"state_name": "Texas"
+	},			
+	{
+		"name": "Seattle",
+		"lat": 47.6038321,
+		"lon": -122.330062,
+		"country_code": "US",
+		"country_name": "United States",
+		"state_code": "WA",
+		"state_name": "Washington"
+	},
+	{
+		"name": "London",
+		"lat": 51.5073219,
+		"lon": -0.1276474,
+		"country_code": "GB",
+		"country_name": "United Kingdom",
+		"state_code": "England",
+		"state_name": "England"
+	},
+	{
+		"name": "Miami",
+		"lat": 25.7741728,
+		"lon": -80.19362,
+		"country_code": "US",
+		"country_name": "United States",
+		"state_code": "FL",
+		"state_name": "Florida"
+	},
+	{
+		"name": "Los Angeles",
+		"lat": 34.0536909,
+		"lon": -118.242766,
+		"country_code": "US",
+		"country_name": "United States",
+		"state_code": "CA",
+		"state_name": "California"
+	},
+];
 
 @connect(
 	state => {
@@ -22,14 +69,18 @@ class LocationSearch extends Component {
 		this.state = {
 			activeSearchQuery: '', // the query that was searched by
 			displaySearchQuery: '', // the query currently in the input
-			locationSuggestionList: [],
-			isSearchInputFocused: false
+			locationSuggestionList: defaultLocationSuggestionList,
+			showSearchSuggestions: false
 		}
 		this.queryChangeTimeoutId = null;
 	}
 
-	setLocation = (lat, lon, name='') => {
-		this.props.setLocation({ lat, lon, name });
+	selectLocation = (location) => {
+		// NOTEEE
+		// need to change this to store the city, state, country, etc
+		this.props.setLocation({ lat: location.lat, lon: location.lon, name: location.name });
+		const newDisplaySearchQuery = `${location.name}, ${location.country_code === 'US' ? location.state_name : location.country_name }`;
+		this.setState({ displaySearchQuery: newDisplaySearchQuery });
 	}
 
 	handleQueryChange = e => {
@@ -65,66 +116,31 @@ class LocationSearch extends Component {
 			const { activeSearchQuery } = this.state;
 			const searchRes = await axios.get(`${generalBackendBaseUrl}weather/searchCoordsByCityStateCountry?query=${activeSearchQuery}`);
 			const searchData = searchRes.data;
-			this.setState({ locationSuggestionList: searchData.results });
-			console.log(searchData)
+
+			if (searchData.results.length === 1) {
+				this.selectLocation(searchData.results[0])
+				return;
+			} 
+			if (searchData.results.length === 0) {
+				this.setState({ locationSuggestionList: defaultLocationSuggestionList });
+			}
+			if (searchData.results.length > 1) {
+				this.setState({ locationSuggestionList: searchData.results });
+			}
+			this.setState({ showSearchSuggestions: true });
 		} catch(error) {
 			console.log(error)
 		}
 	}
 
+
+
 	render() {
 		const { 
 			displaySearchQuery,
-			locationSuggestionList
+			locationSuggestionList,
+			showSearchSuggestions
 		} = this.state;
-
-		// const locationSuggestionList = [
-		// 	{
-		// 		"name": "Dallas",
-		// 		"lat": 32.7762719,
-		// 		"lon": -96.7968559,
-		// 		"country_code": "US",
-		// 		"country_name": "United States",
-		// 		"state_code": "TX",
-		// 		"state_name": "Texas"
-		// 	},
-		// 	{
-		// 		"name": "Dallas",
-		// 		"lat": 33.9237141,
-		// 		"lon": -84.8407732,
-		// 		"country_code": "US",
-		// 		"country_name": "United States",
-		// 		"state_code": "GA",
-		// 		"state_name": "Georgia"
-		// 	},
-		// 	{
-		// 		"name": "Dallas",
-		// 		"lat": 44.9189206,
-		// 		"lon": -123.315869,
-		// 		"country_code": "US",
-		// 		"country_name": "United States",
-		// 		"state_code": "OR",
-		// 		"state_name": "Oregon"
-		// 	},
-		// 	{
-		// 		"name": "Dalat",
-		// 		"lat": 11.9402416,
-		// 		"lon": 108.4375758,
-		// 		"country_code": "VN",
-		// 		"country_name": "Vietnam",
-		// 		"state_code": "Lâm Đồng Province",
-		// 		"state_name": "Lâm Đồng Province"
-		// 	},
-		// 	{
-		// 		"name": "Dallas",
-		// 		"lat": 35.3160401,
-		// 		"lon": -81.1764865,
-		// 		"country_code": "US",
-		// 		"country_name": "United States",
-		// 		"state_code": "NC",
-		// 		"state_name": "North Carolina"
-		// 	}
-		// ]
 
 		return (
 			<div class={style.locationSearch}>
@@ -134,28 +150,32 @@ class LocationSearch extends Component {
 						placeholder='City, State/Country'
 						value={displaySearchQuery}
 						onInput={this.handleQueryChange}
-						onFocus={() => this.setState({ isSearchInputFocused: true}) }
-						onBlur={() => this.setState({ isSearchInputFocused: false}) }
+						onFocus={() => this.setState({ showSearchSuggestions: true}) }
+						onBlur={() => this.setState({ showSearchSuggestions: false}) }
 						class={style.searchInput}
 					/>
 					<button type='submit'>
-						<img src={`/assets/image/magnifying-glass.svg`} alt="Search" />
+						<img src={imagePathFormatter('magnifying-glass.svg')} alt='Search' />
 					</button>
 				</form>
-				<div class={style.suggesstionList}>
-					{locationSuggestionList.map((suggesstion, index) => {
-						return (
-							<div key={index}>
-								<p>
-									{suggesstion.name}
-									<span>
-										, {suggesstion.country_code === 'US' ? suggesstion.state_name : suggesstion.country_name }
-									</span>
-								</p>
-							</div>
-						)
-					})}
-				</div>
+				{showSearchSuggestions ? (
+					<div class={style.suggesstionList}>
+						<hr />
+						{locationSuggestionList.map((suggesstion, index) => {
+							return (
+								<div key={index} onClick={() => this.selectLocation(suggesstion)}>
+									<p>
+										{suggesstion.name}
+										<span>
+											, {suggesstion.country_code === 'US' ? suggesstion.state_name : suggesstion.country_name }
+										</span>
+									</p>
+								</div>
+							)
+						})}
+					</div>
+				) : null}
+				
 			</div>
 		)
 	}

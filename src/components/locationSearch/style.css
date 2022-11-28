@@ -1,9 +1,11 @@
 .locationSearch {
-	
+	--search-form-height: 40px;
+	display: flex;
+    flex-direction: column;
+	width: 80vw;
 }
 
 .searchForm {
-	--search-form-height: 40px;
 	height: var(--search-form-height);
 	display: flex;
 	align-items: center;
@@ -12,12 +14,19 @@
 .searchInput {
 	border: none;
 	border-radius: calc(var(--search-form-height) / 2);
-	box-shadow: 1px 2px 3px 0px #919191;
-	font-size: 16px;
 	padding: calc(var(--search-form-height) / 2);
 	height: 100%;
 	outline: none;
-	width: 80vw;
+	width: 100%;
+}
+.searchInput:focus {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.searchInput, .suggesstionList {
+	box-shadow: 1px 2px 2px 0px #919191;
+	font-size: 16px;
 }
 
 .searchForm > button {
@@ -37,4 +46,17 @@
 
 .suggesstionList {
 	background-color: white;
+	padding: 10px 0;
+	width: 100%;
+}
+.suggesstionList > hr {
+	border: 0.5px solid #e0e0e0;
+	margin: -10px 5px 5px 5px;
+}
+.suggesstionList > div > p {
+	padding: 10px calc(var(--search-form-height) / 2);
+	margin: 0;
+}
+.suggesstionList > div > p:hover {
+	background-color: #d8f2ff;
 }
