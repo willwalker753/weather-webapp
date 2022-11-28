@@ -1,16 +1,17 @@
 import { h } from 'preact';
 import { Router } from 'preact-router';
+import { Provider } from 'preact-redux';
+import store from './redux/store';
 import Match from 'preact-router/match';
 import { createHashHistory } from 'history';
 import baseName from './util/baseName';
 
 import Header from './components/header';
 import Home from './routes/home';
-import About from './routes/about';
 
 const App = () => {
 	return (
-		<div id='app'>
+		<div id='app'>			
 			<Match>
 				{() => {
 					// If the page path is using hash routing
@@ -23,11 +24,12 @@ const App = () => {
 					return null;
 				}}
 			</Match>
-			<Header />
-			<Router history={createHashHistory()}>
-				<About path={`${baseName}/about`} />
-				<Home default />
-			</Router>
+			<Provider store={store}>
+				<Header />
+				<Router history={createHashHistory()}>
+					<Home default />
+				</Router>
+			</Provider>
 		</div>
 	)
 }

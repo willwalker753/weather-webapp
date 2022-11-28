@@ -1,0 +1,40 @@
+.locationSearch {
+	
+}
+
+.searchForm {
+	--search-form-height: 40px;
+	height: var(--search-form-height);
+	display: flex;
+	align-items: center;
+}
+
+.searchInput {
+	border: none;
+	border-radius: calc(var(--search-form-height) / 2);
+	box-shadow: 1px 2px 3px 0px #919191;
+	font-size: 16px;
+	padding: calc(var(--search-form-height) / 2);
+	height: 100%;
+	outline: none;
+	width: 80vw;
+}
+
+.searchForm > button {
+	background-color: dodgerblue;
+	border: none;
+	border-radius: calc(var(--search-form-height) / 2);
+	height: calc(0.9 * var(--search-form-height));
+	width: calc(0.9 * var(--search-form-height));
+	outline: none;
+	margin-left: calc(0px - var(--search-form-height));
+}
+.searchForm > button > img {
+	margin-top: 8%;
+	height: 60%;
+	width: 60%;
+}
+
+.suggesstionList {
+	background-color: white;
+}

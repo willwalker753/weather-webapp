@@ -1,3 +1,3 @@
-const baseName = '/preact-boilerplate';
+const baseName = '/weather-webapp';
 
 export default baseName;

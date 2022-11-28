@@ -1,4 +1,4 @@
 import App from '/App';
-import '/style';
+import './index.css';
 
 export default App;
