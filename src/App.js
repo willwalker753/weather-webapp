@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { Router } from 'preact-router';
-import { Provider } from 'preact-redux';
+import { Provider } from 'react-redux';
 import store from './redux/store';
 import Match from 'preact-router/match';
 import { createHashHistory } from 'history';
@@ -8,6 +8,7 @@ import baseName from './util/baseName';
 
 import Header from './components/header';
 import Home from './routes/home';
+
 
 const App = () => {
 	return (
@@ -26,8 +27,24 @@ const App = () => {
 			</Match>
 			<Provider store={store}>
 				<Header />
-				<Router history={createHashHistory()}>
-					<Home default />
+				{/* 
+					IMPORTANT
+
+					http://personal:8080/#/weather-webapp/some
+
+					Notice the hash in the url. It is used because github pages only hosts index.html
+					Normally 404.html would redirect
+
+					Havent figured all of it out yet.
+					createHashHistory is probably required
+					https://github.com/remix-run/history/blob/main/docs/api-reference.md#createhashhistory
+				*/}
+				<Router 
+					history={createHashHistory()} 
+					onChange={e => console.log(e)}
+				>
+					<Home path="/weather-webapp/some" />
+					{/* <Home default /> */}
 				</Router>
 			</Provider>
 		</div>

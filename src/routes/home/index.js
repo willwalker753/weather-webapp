@@ -1,11 +1,24 @@
-import { h } from 'preact';
+import { h, Component } from 'preact';
 import style from '/routes/home/style.css';
 
-const Home = () => (
-	<div class={style.home}>
-		<h1>Home</h1>
-		<p>This is the Home component.</p>
-	</div>
-);
+class Home extends Component {
+	constructor() {
+		super();
+		this.state = {
+			
+		}
+	}
+
+	render() {
+		return (
+			<div class={style.home}>
+				<h1>Home</h1>
+				<p>This is the Home component.</p>
+				<button>Test</button>
+			</div>
+		)
+	}
+
+};
 
 export default Home;

@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import { connect } from 'preact-redux';
+import { connect } from 'react-redux';
 import { setLocation } from '../../redux/actions/locationAction';
 import axios from 'axios';
 import generalBackendBaseUrl from '../../util/generalBackendBaseUrl';
@@ -76,8 +76,111 @@ class LocationSearch extends Component {
 	}
 
 	selectLocation = (location) => {
+
+
+
+
+
+
+
+
+
+
+
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
 		// NOTEEE
-		// need to change this to store the city, state, country, etc
+		// need to change this redux to store the city, state, country, etc
+
+
+		// remove browser autocomplete from search input (it covers the suggestions)
+
+		// make search bigger. also maybe make it expand to full screen width when the input is focused
+
+		// implement search history instead of default suggestions (only default when no history)
+
+		// find better font
+
+		// add 2nd api key to general-backend. Have it cycle between the 2. Also if one fails due to rate limit, try the other
+
+		// when page loads, use the selected location from redux if it exists
+
+
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
+
+
+
+
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
+
+
+
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		this.props.setLocation({ lat: location.lat, lon: location.lon, name: location.name });
 		const newDisplaySearchQuery = `${location.name}, ${location.country_code === 'US' ? location.state_name : location.country_name }`;
 		this.setState({ displaySearchQuery: newDisplaySearchQuery });
@@ -118,7 +221,10 @@ class LocationSearch extends Component {
 			const searchData = searchRes.data;
 
 			if (searchData.results.length === 1) {
-				this.selectLocation(searchData.results[0])
+				this.selectLocation(searchData.results[0]);
+				const searchInput = document.getElementById('locationSearch-searchInput');
+				searchInput.blur();
+				this.setState({ showSearchSuggestions: false });
 				return;
 			} 
 			if (searchData.results.length === 0) {
@@ -146,6 +252,7 @@ class LocationSearch extends Component {
 			<div class={style.locationSearch}>
 				<form onSubmit={this.handleManualFormSubmit} class={style.searchForm}>
 					<input 
+						id='locationSearch-searchInput'
 						type='text' 
 						placeholder='City, State/Country'
 						value={displaySearchQuery}
